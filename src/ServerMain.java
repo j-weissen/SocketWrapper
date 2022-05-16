@@ -4,6 +4,7 @@
  *           Fachrichtung Elektronik und Technische Informatik
  *----------------------------------------------------------------------------*/
 
+import Network.Position;
 import Network.Server;
 import Network.Socket;
 
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ServerMain {
     public static void main(String[] args) throws IOException, InterruptedException {
-        Server<String> srv = new Server<>(6971);
+        Server<Position> srv = new Server<>(6971);
         srv.start();
         Scanner scanner = new Scanner(System.in);
         AtomicBoolean stop = new AtomicBoolean(false);
@@ -44,9 +45,7 @@ public class ServerMain {
         fred.start();
         while (!stop.get()){
             String inp = scanner.next();
-            srv.sendData(inp);
-
-
+            srv.sendData(new Position(inp));
         }
 
         srv.close();

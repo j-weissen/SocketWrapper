@@ -20,7 +20,7 @@ public abstract class Socket<T> extends Thread {
         recv = new ObjectInputStream(socket.getInputStream());
     }
 
-    public void sendData(T data) throws IOException {
+    public void sendData(Object data) throws IOException {
         send.writeObject(data);
     }
 
