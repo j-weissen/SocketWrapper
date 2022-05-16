@@ -1,6 +1,8 @@
 package Network;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable {
     private int col, row;
 
     public Position(int col, int row) {

@@ -44,7 +44,7 @@ public class ServerMain {
 
         fred.start();
         while (!stop.get()){
-            String inp = scanner.next();
+            String inp = scanner.nextLine();
             srv.sendData(new Position(inp));
         }
 
