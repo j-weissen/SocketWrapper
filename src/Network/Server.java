@@ -3,10 +3,10 @@ package Network;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-public class Server extends Socket {
+public class Server<T> extends Socket<T> {
     ServerSocket serverSocket;
 
-    Server(int port) throws IOException {
+    public Server(int port) throws IOException {
         super();
         serverSocket = new ServerSocket(port);
         socket = serverSocket.accept();
