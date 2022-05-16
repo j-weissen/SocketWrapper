@@ -30,12 +30,12 @@ public abstract class Socket<T> extends Thread {
 
     @Override
     public void run() {
-        Object rawData;
+        Object rawData = null;
         while (true) {
             try {
                 rawData = recvData();
             } catch (IOException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                //throw new RuntimeException(e);
             }
             if (rawData != null) {
                 if (rawData.equals(CLOSE)) {
