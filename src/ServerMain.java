@@ -4,12 +4,12 @@
  *           Fachrichtung Elektronik und Technische Informatik
  *----------------------------------------------------------------------------*/
 
-import Network.Position;
 import Network.Server;
 import Network.Socket;
 
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Kurzbeschreibung
@@ -23,20 +23,34 @@ public class ServerMain {
         Server<String> srv = new Server<>(6971);
         srv.start();
         Scanner scanner = new Scanner(System.in);
-        while (true){
-            String inp = scanner.next();
-            srv.sendData(inp);
-            Object temp;
-            if ((temp = srv.getObject()) != null) {
-                System.out.println(temp);
-                if (temp.equals("\\q")){
-                    srv.sendData(Socket.CLOSE);
-                    break;
+        AtomicBoolean stop = new AtomicBoolean(false);
+        Thread fred = new Thread(() ->  {
+            while (true){
+                Object temp;
+                if ((temp = srv.getObject()) != null) {
+                    System.out.println(temp);
+                    if (temp.equals("\\q")){
+                        stop.set(true);
+                        try {
+                            srv.sendData(Socket.CLOSE);
+
+                        } catch (IOException e) {}
+                        break;
+                    }
                 }
             }
+        });
+
+        fred.start();
+        while (!stop.get()){
+            String inp = scanner.next();
+            srv.sendData(inp);
+
+
         }
 
         srv.close();
         srv.join();
+        fred.join();
     }
 }
