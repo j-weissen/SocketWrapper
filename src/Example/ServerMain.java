@@ -1,39 +1,35 @@
-
+package Example;
 /*-----------------------------------------------------------------------------
  *              Hoehere Technische Bundeslehranstalt STEYR
  *           Fachrichtung Elektronik und Technische Informatik
  *----------------------------------------------------------------------------*/
 
-import Network.Position;
 import Network.Server;
 import Network.Socket;
 
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * Kurzbeschreibung
- *
- * @author : sprechtl
- * @date : 16.05.2021
- * @details Detailbeschreibung
- */
 public class ServerMain {
     public static void main(String[] args) throws IOException, InterruptedException {
-        Server<Position> srv = new Server<>(6971);
+        Server<Position> srv = new Server<>(6969);
         srv.start();
         Scanner scanner = new Scanner(System.in);
+        AtomicReference<String> inp = new AtomicReference<>("");
+
         AtomicBoolean stop = new AtomicBoolean(false);
-        Thread fred = new Thread(() ->  {
-            while (true){
+        Thread fred = new Thread(() -> {
+            while (true) {
                 Object temp;
                 if ((temp = srv.getObject()) != null) {
-                    if (temp.equals("\\q")){
+                    if (temp.equals("\\q")) {
                         stop.set(true);
                         try {
                             srv.sendData(Socket.CLOSE);
-                        } catch (IOException ignored) {}
+                        } catch (IOException ignored) {
+                        }
                         break;
                     }
                     System.out.println(temp);
@@ -41,13 +37,26 @@ public class ServerMain {
             }
         });
 
+        Thread scannerich = new Thread(() -> {
+            while (!stop.get()) {
+                try {
+                    inp.set(scanner.nextLine());
+                } catch (Exception ignored) {
+                }
+            }
+        });
         fred.start();
-        while (!stop.get()){
-            String inp = scanner.nextLine();
-            srv.sendData(new Position(inp));
+        scannerich.start();
+        while (!stop.get()) {
+            if (!inp.get().equals("")) {
+                srv.sendData(new Position(inp.get()));
+                inp.set("");
+            }
         }
 
         srv.close();
+        scannerich.interrupt();
+        scannerich.join();
         fred.join();
     }
 }
