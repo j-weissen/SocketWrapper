@@ -20,7 +20,7 @@ public class ServerMain {
         AtomicReference<String> inp = new AtomicReference<>("");
 
         AtomicBoolean stop = new AtomicBoolean(false);
-        Thread fred = new Thread(() -> {
+        Thread networkInput = new Thread(() -> {
             while (true) {
                 Object temp;
                 if ((temp = srv.getObject()) != null) {
@@ -37,7 +37,7 @@ public class ServerMain {
             }
         });
 
-        Thread scannerich = new Thread(() -> {
+        Thread localInput = new Thread(() -> {
             while (!stop.get()) {
                 try {
                     inp.set(scanner.nextLine());
@@ -45,8 +45,9 @@ public class ServerMain {
                 }
             }
         });
-        fred.start();
-        scannerich.start();
+        networkInput.start();
+        localInput.start();
+
         while (!stop.get()) {
             if (!inp.get().equals("")) {
                 srv.sendData(new Position(inp.get()));
@@ -55,8 +56,8 @@ public class ServerMain {
         }
 
         srv.close();
-        scannerich.interrupt();
-        scannerich.join();
-        fred.join();
+        localInput.interrupt();
+        localInput.join();
+        networkInput.join();
     }
 }
