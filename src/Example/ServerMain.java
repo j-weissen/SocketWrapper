@@ -45,6 +45,7 @@ public class ServerMain {
                 }
             }
         });
+
         networkInput.start();
         localInput.start();
 
