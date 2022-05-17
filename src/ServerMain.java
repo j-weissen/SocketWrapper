@@ -29,15 +29,14 @@ public class ServerMain {
             while (true){
                 Object temp;
                 if ((temp = srv.getObject()) != null) {
-                    System.out.println(temp);
                     if (temp.equals("\\q")){
                         stop.set(true);
                         try {
                             srv.sendData(Socket.CLOSE);
-
-                        } catch (IOException e) {}
+                        } catch (IOException ignored) {}
                         break;
                     }
+                    System.out.println(temp);
                 }
             }
         });
@@ -49,7 +48,6 @@ public class ServerMain {
         }
 
         srv.close();
-        srv.join();
         fred.join();
     }
 }

@@ -46,10 +46,11 @@ public abstract class Socket<T> extends Thread {
         }
     }
 
-    public void close() throws IOException {
+    public void close() throws IOException, InterruptedException {
         send.close();
         recv.close();
         socket.close();
+        join();
     }
 
     synchronized public T getObject() {
