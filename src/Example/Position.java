@@ -13,8 +13,14 @@ public class Position implements Serializable {
     public Position(String str) {
         String legalDelimiters = "[ ,;]";
         String[] values = str.split(legalDelimiters);
-        setCol(Integer.parseInt(values[0]));
-        setRow(Integer.parseInt(values[1]));
+        try{
+            setCol(Integer.parseInt(values[0]));
+            setRow(Integer.parseInt(values[1]));
+        } catch (Exception e){
+            System.out.println("Error in position constructor -> x,y = 0,0");
+            setCol(0);
+            setRow(0);
+        }
     }
 
     public int getCol() {

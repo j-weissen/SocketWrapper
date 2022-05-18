@@ -5,12 +5,7 @@ import Network.Client;
 import java.io.IOException;
 
 public class ClientMain {
-    public static void main(String[] args) throws IOException {
-        Client<String> c = new Client<>("10.52.7.63", 6969);
-        c.start();
-        while (true) {
-            c.sendData("AAAB");
-        }
-
+    public static void main(String[] args) throws IOException, InterruptedException {
+        Main.connection(new Client<Position>("127.0.0.1", 6969));
     }
 }

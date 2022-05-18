@@ -1,7 +1,6 @@
 package Network;
 
 import java.io.*;
-import java.util.Objects;
 
 public abstract class Socket<T> extends Thread {
     public static final String CLOSE = "close";
@@ -9,6 +8,8 @@ public abstract class Socket<T> extends Thread {
     protected ObjectOutputStream send;
     protected ObjectInputStream recv;
     protected T object;
+
+    private boolean closed = false;
 
 
     Socket() {
@@ -20,7 +21,7 @@ public abstract class Socket<T> extends Thread {
         recv = new ObjectInputStream(socket.getInputStream());
     }
 
-    public void sendData(Object data) throws IOException {
+    public void sendData(Serializable data) throws IOException {
         send.writeObject(data);
     }
 
@@ -35,10 +36,11 @@ public abstract class Socket<T> extends Thread {
             try {
                 rawData = recvData();
             } catch (IOException | ClassNotFoundException e) {
-                //throw new RuntimeException(e);
             }
             if (rawData != null) {
                 if (rawData.equals(CLOSE)) {
+                    closed = true;
+                    System.out.println("Closed");
                     return;
                 }
                 setObject((T) rawData);
@@ -61,5 +63,9 @@ public abstract class Socket<T> extends Thread {
 
     protected void setObject(T object) {
         this.object = object;
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 }
