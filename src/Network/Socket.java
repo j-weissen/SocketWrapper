@@ -40,7 +40,6 @@ public abstract class Socket<T> extends Thread {
             if (rawData != null) {
                 if (rawData.equals(CLOSE)) {
                     closed = true;
-                    System.out.println("Closed");
                     return;
                 }
                 setObject((T) rawData);

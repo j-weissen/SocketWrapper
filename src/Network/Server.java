@@ -9,6 +9,9 @@ public class Server<T> extends Socket<T> {
     public Server(int port) throws IOException {
         super();
         serverSocket = new ServerSocket(port);
+    }
+
+    public void waitForConnection() throws IOException {
         socket = serverSocket.accept();
         setStreams();
     }
